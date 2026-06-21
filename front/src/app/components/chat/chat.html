@@ -1,0 +1,23 @@
+<header></header>
+<main>
+    <ul class="list-group">
+        @for(item of messages(); track $index){
+        <li class="list-group-item">
+            <strong>{{item.name}}:</strong> {{item.message}}
+        </li>
+        }
+    </ul>
+</main>
+<footer>
+    <form [formGroup]="chatForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" formControlName="name">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mensaje</label>
+            <input type="text" class="form-control" formControlName="message">
+        </div>
+        <input type="submit" value="Enviar" class="btn btn-primary">
+    </form>
+</footer>
