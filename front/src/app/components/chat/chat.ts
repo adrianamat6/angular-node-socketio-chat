@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { io } from 'socket.io-client';
+import { environment } from '../../../environments/environment';
 
 interface ChatMessage {
   name: string;
@@ -13,26 +14,27 @@ interface ChatMessage {
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
-export class Chat {
+export class Chat implements OnInit {
 
-  socket = io('http://localhost:3000');
-  // messages: ChatMessage[] = [];
-  messages = signal<ChatMessage[]>([])
+  socket = io(environment.webServerUrl);
+
+  messages = signal<ChatMessage[]>([]);
+  clientsCount = signal<number>(0);
 
   chatForm = new FormGroup({
-    name: new FormControl(),
-    message: new FormControl()
+    name: new FormControl(''),
+    message: new FormControl('')
   });
 
   ngOnInit() {
+    // antes este callback estaba vacío y los mensajes nunca se guardaban
     this.socket.on('chat_message_server', (data: ChatMessage) => {
-      // this.messages.update((oldValue: ChatMessage[]) => {
-      //   return [...oldValue, data];
-      // })
-      // const arrCopia = [...this.messages()];
-      // arrCopia.push(data);
-      // this.messages.set(arrCopia);
-      this.messages.set([...this.messages(), data]);
+      this.messages.update(msgs => [...msgs, data]);
+    });
+
+    // el evento debe llamarse igual en frontend y backend: 'clients_count'
+    this.socket.on('clients_count', (clientsCount: number) => {
+      this.clientsCount.set(clientsCount);
     });
   }
 

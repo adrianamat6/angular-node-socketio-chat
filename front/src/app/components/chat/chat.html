@@ -1,23 +1,49 @@
-<header></header>
-<main>
-    <ul class="list-group">
-        @for(item of messages(); track $index){
-        <li class="list-group-item">
-            <strong>{{item.name}}:</strong> {{item.message}}
+<div class="chat-window">
+
+  <header class="chat-header">
+    <span class="chat-header__dot"></span>
+    <h2 class="chat-header__title">Sala de chat</h2>
+    <p> Clientes {{clientsCount()}} </p>
+  </header>
+
+  <main class="chat-body">
+    <ul class="list-group chat-messages">
+      @for (item of messages(); track $index) {
+        <li class="list-group-item chat-message">
+          <div class="chat-message__avatar">{{ item.name.charAt(0).toUpperCase() }}</div>
+          <div class="chat-message__bubble">
+            <strong class="chat-message__author">{{ item.name }}</strong>
+            <p class="chat-message__text">{{ item.message }}</p>
+          </div>
         </li>
-        }
+      } @empty {
+        <li class="chat-empty">
+          Todavía no hay mensajes. ¡Escribe el primero!
+        </li>
+      }
     </ul>
-</main>
-<footer>
-    <form [formGroup]="chatForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" formControlName="name">
+  </main>
+
+  <footer class="chat-footer">
+    <form [formGroup]="chatForm" (ngSubmit)="onSubmit()" class="chat-form">
+      <div class="row g-2 align-items-end">
+
+        <div class="col-12 col-sm-3">
+          <label class="form-label">Nombre</label>
+          <input type="text" class="form-control" formControlName="name">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Mensaje</label>
-            <input type="text" class="form-control" formControlName="message">
+
+        <div class="col-12 col-sm-7">
+          <label class="form-label">Mensaje</label>
+          <input type="text" class="form-control" formControlName="message">
         </div>
-        <input type="submit" value="Enviar" class="btn btn-primary">
+
+        <div class="col-12 col-sm-2 d-grid">
+          <input type="submit" value="Enviar" class="btn btn-primary">
+        </div>
+
+      </div>
     </form>
-</footer>
+  </footer>
+
+</div>
